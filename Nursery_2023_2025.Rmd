@@ -17,9 +17,6 @@ library(lubridate)
 
 Nursery_Figure <- read_csv("Nursery_2023-2025.csv")
 
-Nursery_Figure <- Nursery_Figure %>%
-  mutate(Date_Time = mdy_hm(Date_Time))
-
 ```
 
 ```{r}
@@ -39,7 +36,7 @@ Nursery_Figure_clean <- Nursery_Figure %>%
 # Make Your Temperature Logger Plot
 
 ```{r fig.width=10, fig.height=5}
-ggplot(Nursery_Figure, aes(x = Date_Time, y = `Temperature(C)`)) +
+ggplot(Nursery_Figure_clean, aes(x = Date_Time, y = `Temperature(C)`)) +
   geom_line() +
   labs(x = "Date",
        y = "Temperature (°C)",
