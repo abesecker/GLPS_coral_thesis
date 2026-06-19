@@ -1,0 +1,71 @@
+---
+title: "Nursery_2023_2025"
+author: "Ava Besecker"
+date: "2026-02-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+```
+
+```{r}
+
+# Load Data
+
+Nursery_Figure <- read_csv("Nursery_2023-2025.csv")
+
+Nursery_Figure <- Nursery_Figure %>%
+  mutate(Date_Time = mdy_hm(Date_Time))
+
+```
+
+```{r}
+library(lubridate)
+
+Nursery_Figure <- Nursery_Figure %>%
+  mutate(Date_Time = mdy_hm(Date_Time))
+
+```
+
+```{r}
+Nursery_Figure_clean <- Nursery_Figure %>%
+  filter(between(`Temperature(C)`, 10, 35))%>%   # remove spikes
+  slice(1:(n() - 7))                              # remove last 7 rows
+```
+
+# Make Your Temperature Logger Plot
+
+```{r fig.width=10, fig.height=5}
+ggplot(Nursery_Figure, aes(x = Date_Time, y = `Temperature(C)`)) +
+  geom_line() +
+  labs(x = "Date",
+       y = "Temperature (°C)",
+       title = "Temperature Logger Time Series") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+ggplot(Nursery_Figure_clean, 
+       aes(x = Date_Time, y = `Temperature(C)`)) +
+  geom_line(color = "black", linewidth = 0.4) +
+  scale_x_datetime(
+    date_breaks = "6 months",
+    date_labels = "%B %Y"
+  ) +
+  labs(x = "",
+    y = expression(Temperature~(degree*C))) +
+ theme_classic(base_size = 14) +
+  theme(
+    axis.text.x = element_text(size = 8, angle = 0, hjust = 0.5),
+    axis.text.y = element_text(size = 10)
+  )
+```
+```{r}
+ggsave("Nursery_SST.png", width = 7, height = 4, dpi = 300)
+```
+
+
